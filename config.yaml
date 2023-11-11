@@ -1,7 +1,7 @@
 discord:
   - discord_token: 
 openai:
-  - openai_key:
+  - openai_key: 
   - gpt_model: gpt-3.5-turbo
 database:
   - db_enabled: true

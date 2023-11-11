@@ -7,11 +7,6 @@ from utils.logger import Color
 import utils.config
 
 if __name__ == '__main__':
-    """
-    这是一个故事，关于一个超可爱、超善良的小男孩
-    你帽写代码无聊就会写一点注释，，，没什么
-    话说这个pyyaml好难用
-    """
     try:
         token = utils.config.read_config()['discord'][0]['discord_token']
         if token:
