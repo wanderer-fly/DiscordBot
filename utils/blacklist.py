@@ -35,12 +35,11 @@ class Blacklist:
             return False
         else:
             try:
-                # 查询是否存在具有特定 user_id 的行
                 query = f"SELECT COUNT(*) FROM {self.table_name} WHERE user_id = ?"
                 result = self.db_helper.cursor.execute(query, (user_id,)).fetchone()
                 count = result[0]
                 
-                # 如果 count 大于 0，表示用户在黑名单中
+                # if `count` >  0, the user is in blacklist
                 if count > 0:
                     return True
                 else:
