@@ -6,7 +6,6 @@ parent_dir = os.path.abspath(os.path.join(current_dir,'..'))
 sys.path.append(parent_dir)
 from utils.config import *
 from utils.logger import *
-# self.api_key = read_config()['openai'][0]['openai_key']
 
 class ChatGPT:
     def __init__(self):
@@ -17,7 +16,7 @@ class ChatGPT:
     def generate_answer(self, prompt):
         self.messages.append({"role": "user", "content": f"{prompt}"})
         completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model=read_config()['openai'][1]['gpt_model'],
             messages=self.messages,
             temperature=0.7
         )

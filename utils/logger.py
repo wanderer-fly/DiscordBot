@@ -13,6 +13,7 @@ class Logger:
     def __init__(self, loglevel:Color, content:str):
         self.loglevel = loglevel
         self.content = content
+        self.output()
     
     def output(self):
         print(f"{self.loglevel.value}[{datetime.datetime.now()}] -> {self.content} \033[0m")
