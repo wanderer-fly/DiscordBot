@@ -1,3 +1,4 @@
 pyyaml
-git+https://github.com/Pycord-Development/pycord
+git+https://github.com/wanderer-fly/pycord/
 openai==0.27.0
+sqlite3
