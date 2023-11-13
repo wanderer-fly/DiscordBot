@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from utils.logger import Logger, Color
+from utils.logger import Logger, Level
 
 from utils.blacklist import Blacklist
 from utils.dbhelper import DBHelper
@@ -13,14 +13,20 @@ from commands.gen_random_int import *
 
 class DcBot:
     def __init__(self, token):
+        # Bot owner id and discord token
+        self.owner_id = utils.config.read_config()['bot'][0]['owner_id']
         self.token = token
+        self.debug = utils.config.read_config()['bot'][1]['debug']
+
         # Database Helper
         self.db = DBHelper()
+
         # Blacklist
         self.blacklist = Blacklist(self.db)
 
-        Logger(Color.INFO, f"Discord Module Version: {discord.__version__}")
-        Logger(Color.INFO, f"Database enabled status: {self.db.return_db_status()}")
+        Logger(Level.INFO, f"Discord Module Version: {discord.__version__}")
+        Logger(Level.INFO, f"Database enabled status: {self.db.return_db_status()}")
+        Logger(Level.DEBUG, f"Debug mode: {self.debug}")
 
         # For traditional command option
         intents = discord.Intents.all()
@@ -31,7 +37,7 @@ class DcBot:
         # Nov.11, 2023 - 我是小小羊的特别关心！！！
         @self.bot.event
         async def on_ready():
-            Logger(Color.INFO, f"Bot logged in as {self.bot.user.name}")
+            Logger(Level.INFO, f"Bot logged in as {self.bot.user.name}")
 
         @self.bot.check
         async def check_black_list(ctx):
@@ -46,8 +52,19 @@ class DcBot:
         async def on_command_error(ctx, error):
             if isinstance(error, commands.CommandError):
                 await ctx.send(f"Command Error: {error}")
+                if self.debug:
+                    Logger(Level.DEBUG, f"Command Error: {error}")
             elif isinstance(error, commands.CheckFailure):
                 await ctx.send(f"Check Failure: {error}")
+                if self.debug:
+                    Logger(Level.DEBUG, f"Check Failure: {error}")
+
+        def is_owner(): # for owner commands like black etc.
+            async def predicate(ctx):
+                if self.owner_id:
+                    return ctx.author.id == self.owner_id
+                return True # return True to allow command execute if own_id not enabled
+            return commands.check(predicate)
 
         def black_list_check():
             async def predicate(ctx):
@@ -66,6 +83,7 @@ class DcBot:
             await ctx.respond("Hey!")
 
         @self.bot.command(name="black")
+        @is_owner()
         async def blacklist_op(ctx, operation):
             if not self.blacklist.db_helper.db_enabled:
                 await ctx.send("Database not enabled")
@@ -77,19 +95,19 @@ class DcBot:
                         result = self.blacklist.add_user(user.id)
                         if result:
                             await ctx.send(f"Add {user.mention} to blacklist")
-                            Logger(Color.INFO, f"{user.id} is added to blacklist")
+                            Logger(Level.INFO, f"{user.id} is added to blacklist")
                         else:
                             await ctx.send(f"Can't add {user.mention} to blacklist")
-                            Logger(Color.ERROR, f"Can't add {user.id} to blacklist")
+                            Logger(Level.ERROR, f"Can't add {user.id} to blacklist")
                 elif operation == 'del':
                     for user in mentions:
                         result = self.blacklist.del_user(user.id)
                         if result:
                             await ctx.send(f"Remove {user.mention} from blacklist")
-                            Logger(Color.INFO, f"{user.id} is removed from blacklist")
+                            Logger(Level.INFO, f"{user.id} is removed from blacklist")
                         else:
                             await ctx.send(f"Can't remove {user.mention} from blacklist")
-                            Logger(Color.ERROR, f"Can't remove {user.id} from blacklist")
+                            Logger(Level.ERROR, f"Can't remove {user.id} from blacklist")
                 elif operation == 'check':
                     for user in mentions:
                         result = self.blacklist.check_user(user.id)

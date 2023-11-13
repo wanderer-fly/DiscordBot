@@ -1,8 +1,10 @@
 import datetime
 from enum import Enum
 
-# Color
-class Color(Enum):
+import utils.config
+
+# Level
+class Level(Enum):
     RESET = "\033[0m"
     ERROR = "\033[91m"
     INFO = "\033[92m"
@@ -10,11 +12,12 @@ class Color(Enum):
     DEBUG = "\033[94m"
 
 class Logger:
-    def __init__(self, loglevel:Color, content:str):
+    def __init__(self, loglevel:Level, content:str):
         self.loglevel = loglevel
         self.content = content
         self.output()
     
     def output(self):
-        print(f"{self.loglevel.value}[{datetime.datetime.now()}] -> {self.content} \033[0m")
+        if utils.config.read_config()['bot'][1]['debug'] == True or self.loglevel != Level.DEBUG:
+            print(f"{self.loglevel.value}[{datetime.datetime.now()}] -> {self.content} \033[0m")
 

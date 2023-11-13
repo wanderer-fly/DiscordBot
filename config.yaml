@@ -1,5 +1,8 @@
 discord:
   - discord_token: 
+bot:
+  - owner_id: 
+  - debug: false
 openai:
   - openai_key: 
   - gpt_model: gpt-3.5-turbo

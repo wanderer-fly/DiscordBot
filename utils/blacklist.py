@@ -17,9 +17,9 @@ class Blacklist:
             result = self.db_helper.cursor.execute(query, (self.table_name,)).fetchone()
             
             if not result:
-                Logger(Color.WARNING, f"Table {self.table_name} is not exist, creating a new one...")
+                Logger(Level.WARNING, f"Table {self.table_name} is not exist, creating a new one...")
                 self.init_db()
-            Logger(Color.INFO, "Blacklist enabled")
+            Logger(Level.INFO, "Blacklist enabled")
     
     def init_db(self): # if not self.db_helper.db_enabled 这个函数不会被执行，所以不需要判断
         self.db_helper.cursor.execute('''
@@ -31,7 +31,7 @@ class Blacklist:
 
     def check_user(self, user_id) -> bool:
         if not self.db_helper.db_enabled:
-            Logger(Color.WARNING, "Database not enabled, ignoring this request")
+            Logger(Level.WARNING, "Database not enabled, ignoring this request")
             return False
         else:
             try:
@@ -50,7 +50,7 @@ class Blacklist:
     
     def add_user(self, user_id) -> bool:
         if not self.db_helper.db_enabled:
-            Logger(Color.WARNING, "Database not enable, ignoring this request")
+            Logger(Level.WARNING, "Database not enable, ignoring this request")
             return False
         else:
             try:
@@ -64,7 +64,7 @@ class Blacklist:
 
     def del_user(self, user_id) -> bool:
         if not self.db_helper.db_enabled:
-            Logger(Color.WARNING, "Database not enable, ignoring this request")
+            Logger(Level.WARNING, "Database not enable, ignoring this request")
             return False
         else:
             try:

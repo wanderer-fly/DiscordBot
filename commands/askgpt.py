@@ -3,7 +3,7 @@ import os
 from discord.ext import commands
 
 from utils.logger import Logger
-from utils.logger import Color
+from utils.logger import Level
 
 # Workspace
 current_dir = os.path.dirname(__file__)
@@ -22,4 +22,4 @@ async def ask(ctx, message):
 async def ask_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
         await ctx.send("You forgot your question!")
-        Logger(Color.WARNING, f"{ctx.message.author} called the API but no question given")
+        Logger(Level.WARNING, f"{ctx.message.author} called the API but no question given")
