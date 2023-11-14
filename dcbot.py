@@ -59,6 +59,10 @@ class DcBot:
                 await ctx.send(f"Check Failure: {error}")
                 if self.debug:
                     Logger(Level.DEBUG, f"Check Failure: {error}")
+            elif isinstance(error, discord.errors.CheckFailure): # 不管用
+                await ctx.send(f"Check Failure: {error}")
+                if self.debug:
+                    Logger(Level.DEBUG, f"Check Failure: {error}")
 
         def is_owner(): # for owner commands like black etc.
             async def predicate(ctx):
@@ -79,18 +83,19 @@ class DcBot:
         @self.bot.check
         def permission_check(value):
             async def predicate(ctx):
+                if not self.db.db_enabled:
+                    return False
                 if ctx.guild is None:
                     user_id = str(ctx.author.id)
-                    if User.get_permission_value(user_id) >= value:
+                    if User.get_permission_value(self.db, user_id) >= value:
                         return True
                 else:
                     return False
             return commands.check(predicate)
         
-        # Build in commands
 
         @self.bot.slash_command(name="hi", description="Say hello to bot")
-        @permission_check(1)
+        @permission_check(5)
         async def hello(ctx):
             await ctx.respond("Hey!")
 
