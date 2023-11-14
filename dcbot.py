@@ -5,6 +5,7 @@ from utils.logger import Logger, Level
 
 from utils.blacklist import Blacklist
 from utils.dbhelper import DBHelper
+from utils.permission import User
 
 import utils.config # 用不到，下次再用不到就去掉……
 
@@ -14,9 +15,9 @@ from commands.gen_random_int import *
 class DcBot:
     def __init__(self, token):
         # Bot owner id and discord token
-        self.owner_id = utils.config.read_config()['bot'][0]['owner_id']
+        self.owner_id = utils.config.Config().read_config()['bot'][0]['owner_id']
         self.token = token
-        self.debug = utils.config.read_config()['bot'][1]['debug']
+        self.debug = utils.config.Config().read_config()['bot'][1]['debug']
 
         # Database Helper
         self.db = DBHelper()
@@ -65,7 +66,7 @@ class DcBot:
                     return ctx.author.id == self.owner_id
                 return True # return True to allow command execute if own_id not enabled
             return commands.check(predicate)
-
+        
         def black_list_check():
             async def predicate(ctx):
                 user_id = str(ctx.author.id)
@@ -73,17 +74,28 @@ class DcBot:
                     await ctx.send("You are in blacklist!")
                     return False
                 return True
-
+            return commands.check(predicate)
+        
+        @self.bot.check
+        def permission_check(value):
+            async def predicate(ctx):
+                if ctx.guild is None:
+                    user_id = str(ctx.author.id)
+                    if User.get_permission_value(user_id) >= value:
+                        return True
+                else:
+                    return False
             return commands.check(predicate)
         
         # Build in commands
 
         @self.bot.slash_command(name="hi", description="Say hello to bot")
+        @permission_check(1)
         async def hello(ctx):
             await ctx.respond("Hey!")
 
         @self.bot.command(name="black")
-        @is_owner()
+        @is_owner() # Only owner can run!!!
         async def blacklist_op(ctx, operation):
             if not self.blacklist.db_helper.db_enabled:
                 await ctx.send("Database not enabled")

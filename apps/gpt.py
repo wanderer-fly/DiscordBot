@@ -9,14 +9,14 @@ from utils.logger import *
 
 class ChatGPT:
     def __init__(self):
-        self.api_key = read_config()['openai'][0]['openai_key']
+        self.api_key = Config().read_config()['openai'][0]['openai_key']
         openai.api_key = self.api_key
         self.messages = [{"role": "system", "content": "你现在是很有用的助手！"}]
 
     def generate_answer(self, prompt):
         self.messages.append({"role": "user", "content": f"{prompt}"})
         completion = openai.ChatCompletion.create(
-            model=read_config()['openai'][1]['gpt_model'],
+            model=Config().read_config()['openai'][1]['gpt_model'],
             messages=self.messages,
             temperature=0.7
         )

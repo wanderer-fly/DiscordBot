@@ -18,6 +18,9 @@ class Logger:
         self.output()
     
     def output(self):
-        if utils.config.read_config()['bot'][1]['debug'] == True or self.loglevel != Level.DEBUG:
+        try:
+            if utils.config.Config().read_config()['bot'][1]['debug'] == True or self.loglevel != Level.DEBUG:
+                print(f"{self.loglevel.value}[{datetime.datetime.now()}] -> {self.content} \033[0m")
+        except:
             print(f"{self.loglevel.value}[{datetime.datetime.now()}] -> {self.content} \033[0m")
 

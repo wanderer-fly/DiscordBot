@@ -8,7 +8,7 @@ import utils.config
 
 if __name__ == '__main__':
     try:
-        token = utils.config.read_config()['discord'][0]['discord_token']
+        token = utils.config.Config().read_config()['discord'][0]['discord_token']
         if token:
             Logger(Level.INFO, f"Token: {token}")
         else:
@@ -22,3 +22,7 @@ if __name__ == '__main__':
         # 林深时候见鹿，溪午不闻钟 ————李白
         # 重构代码很无聊的awa
         Logger(Level.ERROR, f"Bot start failed: {e}")
+
+    # bot = DcBot(token=token)
+    # bot.setup()
+    # bot.run()
