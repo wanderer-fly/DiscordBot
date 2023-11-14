@@ -8,19 +8,20 @@ from utils.dbhelper import DBHelper
 from utils.permission import User
 
 import utils.config # 用不到，下次再用不到就去掉……
+import utils
 
 from commands.askgpt import *
 from commands.gen_random_int import *
 
 class DcBot:
-    def __init__(self, token):
+    def __init__(self, token, db = None):
         # Bot owner id and discord token
         self.owner_id = utils.config.Config().read_config()['bot'][0]['owner_id']
         self.token = token
         self.debug = utils.config.Config().read_config()['bot'][1]['debug']
 
         # Database Helper
-        self.db = DBHelper()
+        self.db = utils.db
 
         # Blacklist
         self.blacklist = Blacklist(self.db)
@@ -87,7 +88,7 @@ class DcBot:
                     return False
                 if ctx.guild is None:
                     user_id = str(ctx.author.id)
-                    if User.get_permission_value(self.db, user_id) >= value:
+                    if User.get_permission_value(user_id) >= value:
                         return True
                 else:
                     return False

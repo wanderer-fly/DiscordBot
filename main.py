@@ -3,8 +3,11 @@ from dcbot import DcBot
 
 from utils.logger import Logger
 from utils.logger import Level
+from utils.dbhelper import DBHelper
 
 import utils.config
+
+import utils
 
 if __name__ == '__main__':
     try:
@@ -15,7 +18,7 @@ if __name__ == '__main__':
             Logger(Level.ERROR, "Token not found in config, exiting...")
             sys.exit(0)
         # 傻逼bot不写下面就会把所有异常当作Token not found（虽然有其他办法但是懒得了。。。
-        bot = DcBot(token=token)
+        bot = DcBot(token=token, db=utils.db)
         bot.setup()
         bot.run()
     except Exception as e:
