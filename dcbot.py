@@ -5,7 +5,7 @@ from utils.logger import Logger, Level
 
 from utils.blacklist import Blacklist
 from utils.dbhelper import DBHelper
-from utils.permission import User
+from utils.permission import Permission
 
 import utils.config # 用不到，下次再用不到就去掉……
 import utils
@@ -88,7 +88,7 @@ class DcBot:
                     return False
                 if ctx.guild is None:
                     user_id = str(ctx.author.id)
-                    if User.get_permission_value(user_id) >= value:
+                    if Permission.get_permission_value(user_id) >= value:
                         return True
                 else:
                     return False
